@@ -143,53 +143,61 @@ public class Matrix {
 
     //Find determinant using Cofactor Method
     public double determinant(double[][] data) {
-
+        double determinantValue = 0;
         if (data.length == 1) {
             //Array size 1,determinant equals to element
-            return data[0][0];
+            determinantValue = data[0][0];
+
         } else if (data.length == 2) {
-            double det = 0;
+
             //Array size 2,{ { { a, b}, { c, d } }
             // determinant equals to a*d-b*c
-            det = (data[0][0] * data[1][1]) - (data[0][1] * data[1][0]);
-            return det;
+            determinantValue = (data[0][0] * data[1][1]) - (data[0][1] * data[1][0]);
+
         } else {
-            double det = 0;
-            for (int j = 0; j < data.length; j++) {
+
+            for (int n = 0; n < data.length; n++) {
                 //recursive:find determinant using Cofactor,
                 //First row is selected,find minor matrix
-                if (j % 2 == 0) {
+                if (n % 2 == 0) {
                     //determinant formula
-                    det += 1 * data[0][j] * determinant(minor(data, 0, j));
+                    determinantValue += 1 * data[0][n] * determinant(detMinor(data, n));
                 } else {
-                    det += -1 * data[0][j] * determinant(minor(data, 0, j));
+                    determinantValue += -1 * data[0][n] * determinant(detMinor(data, n));
                 }
             }
-            return det;
+
         }
+        return determinantValue;
     }
 
     //Method for minor matrix
-    private double[][] minor(double[][] data, int i, int j) {
+    private double[][] detMinor(double[][] data, int j) {
+        int rowIndex = 0;
+        int columnIndex = 0;
         //minor matrix size=matrixsize-1
         double[][] minorMatrix = new double[data.length - 1][data.length - 1];
         // index for minor matrix position:
-        int rowMinor = 0, columnMinor = 0;
-        for (int k = 0; k < data.length; k++) {
-            double[] row = data[k];
-            //  if it is not first row
-            if (k != i) {
-                for (int l = 0; l < row.length; l++) {
-                    if (l != j) {
-                        minorMatrix[rowMinor][columnMinor++] = row[l];
+        int line = 0;
+        //each line
+        while (line < data.length) {
+            double[] row = data[line];
+            //  if it is not first row since it is not selected
+            if (line != 0) {
+                for (int m = 0; m < row.length; m++) {
+                    if (m != j) {
+                        minorMatrix[rowIndex][columnIndex++] = row[m];
                     }
+
                 }
-                rowMinor++;
-                columnMinor = 0;
+                rowIndex++;
+                columnIndex = 0;
             }
+            line++;
         }
         return minorMatrix;
     }
+
 
     public Matrix inverseMatrix(final double[][] a) {
         double diagonalValue, notDiagonalValue;
